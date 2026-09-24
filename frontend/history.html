@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interview History — InterviewIQ AI</title>
+    <meta name="description" content="View all your past AI mock interview sessions with detailed scores and feedback reports." />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+      * { font-family: 'Inter', sans-serif; }
+      .status-completed  { background:#DCFCE7; color:#16A34A; border-color:#BBF7D0; }
+      .status-incomplete { background:#FEF9C3; color:#CA8A04; border-color:#FDE68A; }
+      .status-failed     { background:#FEE2E2; color:#DC2626; border-color:#FECACA; }
+      .card-hover { transition: box-shadow .2s, transform .2s; }
+      .card-hover:hover { box-shadow: 0 12px 30px rgba(0,0,0,0.10); transform: translateY(-2px); }
+      .modal-overlay { backdrop-filter: blur(6px); }
+      ::-webkit-scrollbar { width:6px; } ::-webkit-scrollbar-track { background:#f1f1f1; } ::-webkit-scrollbar-thumb { background:#d1d5db; border-radius:99px; }
+      @keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: none; } }
+      .animate-in { animation: fadeIn .35s ease both; }
+      @keyframes spin { to { transform: rotate(360deg); } }
+      .spinner { animation: spin 0.8s linear infinite; }
+    </style>
+  </head>
+  <body class="bg-[#F8F9FA] min-h-screen text-black antialiased">
+
+    <!-- ── TOP NAVBAR ──────────────────────────────────────────── -->
+    <nav class="fixed left-1/2 -translate-x-1/2 top-4 w-[92%] max-w-5xl bg-white rounded-2xl border border-black/[0.08] shadow-[0_4px_20px_rgba(0,0,0,0.07)] px-5 py-2 flex justify-between items-center z-40 h-[50px]">
+      <a href="/" class="font-bold text-[13px] text-black flex items-center gap-2">
+        <div class="w-6 h-6 bg-black rounded-md flex items-center justify-center text-white">
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+        </div>
+        InterviewIQ.AI
+      </a>
+      <div class="flex items-center gap-3">
+        <!-- Live Credits Display -->
+        <a href="/pricing.html" class="flex items-center gap-1 bg-[#E8F8F0] border border-[#22C55E]/15 px-2.5 py-0.5 rounded-lg text-[#16A34A] text-xs font-bold shadow-sm hover:-translate-y-0.5 transition-all mr-1">
+          <span>🪙</span>
+          <span id="nav-credits">...</span>
+        </a>
+        <a href="/interview.html" class="text-xs font-semibold text-gray-500 hover:text-black transition-colors px-3 py-1.5 rounded-lg hover:bg-gray-100">Interview Setup</a>
+        <span class="text-xs font-bold text-black bg-gray-100 px-3 py-1.5 rounded-lg">History</span>
+        <a href="/payment-history.html" class="text-xs font-semibold text-gray-500 hover:text-black transition-colors px-3 py-1.5 rounded-lg hover:bg-gray-100">Payment History</a>
+        <a id="admin-panel-link" href="/admin.html" class="hidden text-xs font-bold text-[#16A34A] bg-[#E8F8F0] border border-[#22C55E]/15 px-3 py-1.5 rounded-lg hover:-translate-y-0.5 transition-all">Admin Panel</a>
+        <button id="signout-btn" class="text-xs font-semibold text-gray-400 hover:text-red-500 transition-colors flex items-center gap-1">
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+          Sign Out
+        </button>
+      </div>
+    </nav>
+
+    <!-- ── PAGE CONTENT ────────────────────────────────────────── -->
+    <main class="pt-[84px] px-4 max-w-5xl mx-auto pb-20">
+
+      <!-- Page Header -->
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+        <div>
+          <h1 class="text-[26px] font-[800] text-black tracking-tight">Interview History</h1>
+          <p class="text-[13px] text-gray-500 font-medium mt-0.5">All your past AI interview sessions in one place</p>
+        </div>
+        <a href="/interview.html" class="flex items-center gap-2 px-4 py-2.5 bg-black hover:bg-gray-800 text-white rounded-xl text-[13px] font-bold transition-colors shadow-sm">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+          New Interview
+        </a>
+      </div>
+
+      <!-- Stats Summary Bar -->
+      <div id="stats-bar" class="hidden grid grid-cols-2 sm:grid-cols-4 gap-3 mb-7">
+        <div class="bg-white rounded-2xl border border-black/5 shadow-sm p-4 text-center">
+          <div id="stat-total" class="text-[26px] font-[800] text-black">0</div>
+          <div class="text-[11px] font-bold text-gray-400 uppercase tracking-wide mt-0.5">Total Interviews</div>
+        </div>
+        <div class="bg-white rounded-2xl border border-black/5 shadow-sm p-4 text-center">
+          <div id="stat-completed" class="text-[26px] font-[800] text-[#16A34A]">0</div>
+          <div class="text-[11px] font-bold text-gray-400 uppercase tracking-wide mt-0.5">Completed</div>
+        </div>
+        <div class="bg-white rounded-2xl border border-black/5 shadow-sm p-4 text-center">
+          <div id="stat-avg" class="text-[26px] font-[800] text-[#2563EB]">--</div>
+          <div class="text-[11px] font-bold text-gray-400 uppercase tracking-wide mt-0.5">Avg. Score</div>
+        </div>
+        <div class="bg-white rounded-2xl border border-black/5 shadow-sm p-4 text-center">
+          <div id="stat-best" class="text-[26px] font-[800] text-[#D97706]">--</div>
+          <div class="text-[11px] font-bold text-gray-400 uppercase tracking-wide mt-0.5">Best Score</div>
+        </div>
+      </div>
+
+      <!-- Loading Spinner -->
+      <div id="loading-state" class="flex flex-col items-center justify-center py-20 gap-4">
+        <div class="w-9 h-9 border-4 border-[#22C55E] border-t-transparent rounded-full spinner"></div>
+        <p class="text-[13px] font-semibold text-gray-500">Loading your interview history...</p>
+      </div>
+
+      <!-- Empty State -->
+      <div id="empty-state" class="hidden flex flex-col items-center justify-center py-20 text-center">
+        <div class="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mb-4">
+          <svg class="w-8 h-8 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        </div>
+        <h3 class="text-[16px] font-bold text-black mb-2">No interviews yet</h3>
+        <p class="text-[13px] text-gray-500 font-medium mb-5 max-w-xs">Complete your first AI mock interview to see your performance history here.</p>
+        <a href="/interview.html" class="px-5 py-2.5 bg-black text-white rounded-xl font-bold text-[13px] hover:bg-gray-800 transition-colors">Start Your First Interview</a>
+      </div>
+
+      <!-- History Cards List -->
+      <div id="history-list" class="hidden space-y-4"></div>
+
+    </main>
+
+    <!-- ══════════════════════════════════════════════
+         REPORT DETAIL MODAL
+    ═════════════════════════════════════════════════ -->
+    <div id="report-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay bg-black/40">
+      <div class="bg-white w-full max-w-[860px] rounded-[22px] shadow-[0_24px_60px_rgba(0,0,0,0.18)] border border-black/10 relative max-h-[92vh] flex flex-col">
+
+        <!-- Modal Header (fixed) -->
+        <div class="flex justify-between items-center px-7 py-5 border-b border-gray-100 shrink-0">
+          <div>
+            <h2 class="text-[19px] font-[800] text-black tracking-tight" id="modal-title">AI Evaluation Report</h2>
+            <p id="modal-meta" class="text-[11px] text-gray-500 font-bold uppercase tracking-wider mt-0.5"></p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button id="modal-pdf-btn" class="hidden flex items-center gap-1.5 px-3.5 py-2 bg-[#22C55E] text-white rounded-xl text-[12px] font-bold hover:bg-[#16A34A] transition-colors cursor-pointer">
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+              Download PDF
+            </button>
+            <button id="modal-close-btn" class="w-8 h-8 flex items-center justify-center rounded-xl bg-gray-100 hover:bg-gray-200 transition-colors cursor-pointer">
+              <svg class="w-4 h-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Modal Body (scrollable) -->
+        <div id="modal-body" class="overflow-y-auto flex-1 p-7">
+          <!-- Dynamically populated by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- jsPDF CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script type="module" src="/src/history.js"></script>
+  </body>
+</html>

@@ -1,0 +1,65 @@
+services:
+  # Backend Spring Boot Service
+  - type: web
+    name: interviewiq-api
+    env: docker
+    plan: free
+    repo: https://github.com/Lakshya-sharma-18/InterviewIQ-AI.git
+    branch: main
+    rootDir: backend
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: DB_HOST
+        fromDatabase:
+          name: interviewiq-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: interviewiq-db
+          property: port
+      - key: DB_DATABASE
+        fromDatabase:
+          name: interviewiq-db
+          property: database
+      - key: DB_USERNAME
+        fromDatabase:
+          name: interviewiq-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: interviewiq-db
+          property: password
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: APP_ENV
+        value: production
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: RAZORPAY_KEY_ID
+        sync: false
+      - key: RAZORPAY_KEY_SECRET
+        sync: false
+      - key: FRONTEND_URL
+        value: https://interviewiq-app.onrender.com
+
+  # Frontend Static Site
+  - type: web
+    name: interviewiq-app
+    env: static
+    repo: https://github.com/Lakshya-sharma-18/InterviewIQ-AI.git
+    branch: main
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://interviewiq-api.onrender.com
+
+databases:
+  # PostgreSQL Database
+  - name: interviewiq-db
+    plan: free
+    region: oregon
+    user: interviewiq_user
