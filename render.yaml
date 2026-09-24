@@ -55,7 +55,7 @@ services:
     staticPublishPath: dist
     envVars:
       - key: VITE_API_URL
-        value: https://interviewiq-api.onrender.com
+        value: https://interviewiq-api-42ej.onrender.com
 
 databases:
   # PostgreSQL Database
