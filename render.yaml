@@ -42,7 +42,7 @@ services:
       - key: RAZORPAY_KEY_SECRET
         sync: false
       - key: FRONTEND_URL
-        value: https://interviewiq-app.onrender.com
+        value: https://interviewiq-app-cppu.onrender.com
 
   # Frontend Static Site
   - type: web
